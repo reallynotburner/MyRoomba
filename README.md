@@ -35,6 +35,13 @@ I needed a quick Arduino library for a Roomba based project. The spec is :
   + bool clockButton;
   + long int odometer;
   + long int angle;
+  + To use:
+  ```
+    updateRoombaState();
+    if (RoombaState.odometer >= 1000) { // travelled a meter?  Good Job!
+      driveStandard(0, 0); // put the brakes on
+    }
+    ```
 };
 
 * ledState
