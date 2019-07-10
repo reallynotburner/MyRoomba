@@ -60,5 +60,6 @@ I needed a quick Arduino library for a Roomba based project. The spec is :
     ```
 
 ## TODO's
-* Add means to read out Roomba sensor / state, bumpers, battery, odometry
-* restructure the project so it can be consumed by the Arduino IDE auto-registration
+* the angle state is BROKEN, need to fix
+* read out the analog values of the cliff sensors, if that works, we may be able to make a line follower
+* move the Roomba to a class, that would remove the global functions and apply them to Roomba scope
