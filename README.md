@@ -39,7 +39,8 @@ I needed a quick Arduino library for a Roomba based project. The spec is :
   ```
     updateRoombaState();
     if (RoombaState.odometer >= 1000) { // travelled a meter?  Good Job!
-      driveStandard(0, 0); // put the brakes on
+      RoombaState.odometer = 0;  // let's reset that value
+      driveStandard(0, 0); // and then put the brakes on
     }
     ```
 };
