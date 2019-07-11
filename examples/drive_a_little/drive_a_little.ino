@@ -9,9 +9,13 @@ void setup() {
 }
 
 void drive_a_little() {
+  ledState.powerColor = orange; // let's make the big button color Orange
+  updateLeds(); // update to make it real
   driveStandard(100, 0); // drive forward at 100mm/second 
   delay(500);           // drive a little
   driveStandard(0, 0); // put the brakes on
+  ledState.powerColor = green;
+  updateLeds();
 }
 
 void exitRoomba() { // it's over
@@ -21,10 +25,12 @@ void exitRoomba() { // it's over
 
 // the loop routine runs over and over again forever:
 void loop() {
+  updateLeds();
   updateRoombaState(); // you MUST call this in your program loops to know what the Roomba is doing
+  Serial.println(RoombaState.dockButton);
   if (RoombaState.dockButton) {
     exitRoomba();
-  } else if (RoombaState.spotButton) {
+  } else if (RoombaState.cleanbutton) {
     drive_a_little();
   }
 }

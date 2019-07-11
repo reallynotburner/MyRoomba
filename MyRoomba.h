@@ -9,6 +9,9 @@
    I would have used it, but I didn't figure out how to get it to compile
    with Arduino 1.8.5 MacOs to an Arduino Micro, so I wrote my own.
 */
+#ifndef MyRoomba_H
+#define MyRoomba_H
+#include "Arduino.h"
 
 #define start 128 // go to Passive mode
 #define roomba_reset 7 // as if you pulled the battery and reinserted it
@@ -30,6 +33,9 @@
 #define sensor_packet_group 142 // ask for a group of sensor packets
 #define sensor_query_list 149 // ask for a series of sensor packets, or just one
 #define big_group 100
+#define orange 128
+#define green 0
+#define red 255
 
 byte responseFromRoomba[80];
 
@@ -118,7 +124,7 @@ void readAllData() {
     counter++;
   }
   // just a tiny delay so you can call this safely.  When you keep mashing it too quicky, it crashes.
-  delay(20); 
+  delay(40); 
 }
 
 // convert Roomba response stream to bumper byte to RoombaState, etc....
@@ -203,12 +209,15 @@ void updateLeds () {
   Serial1.write(ledCommand, 4);
 }
 
+// this command puts the roomba into hacking mode and will follow Asimov's Third Law
 void startSafe()
 {
   Serial1.write(start);  //Start
   Serial1.write(safe);  //Safe mode
   delay(1000);
 }
+
+// this command puts the roomba into hacking mode and will viloate Asimov's Third Law
 void startFull()
 {
   Serial1.write(start);  //Start
@@ -337,3 +346,5 @@ byte readBumbers() {
   }
   return inByte;
 }
+
+#endif
