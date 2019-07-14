@@ -1,8 +1,6 @@
 #include "MyRoomba.h"
 
 void setup() {
-  Serial.begin(115200); // use this port to read out debugging data from the Roomba
-  delay(100);
   Serial1.begin(115200); // we need this separate port to talk to the Roomba
   // this command puts the roomba into hacking mode and will follow Asimov's Third Law
   startSafe();
@@ -27,7 +25,6 @@ void exitRoomba() { // it's over
 void loop() {
   updateLeds();
   updateRoombaState(); // you MUST call this in your program loops to know what the Roomba is doing
-  Serial.println(RoombaState.dockButton);
   if (RoombaState.dockButton) {
     exitRoomba();
   } else if (RoombaState.cleanButton) {
