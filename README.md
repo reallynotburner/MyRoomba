@@ -25,7 +25,7 @@ I needed a quick Arduino library for a Roomba based project. The spec is :
   + bool cliffFrontLeft;
   + bool cliffFrontRight;
   + bool cliffRight;
-  + bool cleanbutton;
+  + bool cleanButton;
   + bool spotButton;
   + bool dockButton;
   + bool dayButton;
@@ -33,13 +33,21 @@ I needed a quick Arduino library for a Roomba based project. The spec is :
   + bool minuteButton;
   + bool scheduleButton;
   + bool clockButton;
-  + long int odometer;
+  + long int distance;
   + long int angle;
-  + To use:
+  + long int distance;
+  + long int angle;
+  + uint16_t batteryVoltage;
+  + uint16_t cliffAnalogLeft;
+  + uint16_t cliffAnalogFrontLeft;
+  + uint16_t cliffAnalogFrontRight;
+  + uint16_t cliffAnalogRight;
+  
+  To use:
   ```
     updateRoombaState();
-    if (RoombaState.odometer >= 1000) { // travelled a meter?  Good Job!
-      RoombaState.odometer = 0;  // let's reset that value
+    if (RoombaState.distance >= 1000) { // travelled a meter?  Good Job!
+      RoombaState.distance = 0;  // let's reset that value
       driveStandard(0, 0); // and then put the brakes on
     }
     ```
@@ -60,6 +68,4 @@ I needed a quick Arduino library for a Roomba based project. The spec is :
     ```
 
 ## TODO's
-* the angle state is BROKEN, need to fix
-* read out the analog values of the cliff sensors, if that works, we may be able to make a line follower
 * move the Roomba to a class, that would remove the global functions and apply them to Roomba scope
