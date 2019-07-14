@@ -58,7 +58,13 @@ Packet cliffFrontRight{11, convertPacketToPosition(11), 1};
 Packet cliffRight{12, convertPacketToPosition(12), 1};
 Packet buttons{18, convertPacketToPosition(18), 1};
 Packet distance{19, convertPacketToPosition(19), 2};
-Packet angle{20, convertPacketToPosition(20), 2};
+Packet angle{20, 14, 2};
+Packet voltage{22, 17, 2};
+
+Packet cliffAnalogLeft{28, 28, 2};
+Packet cliffAnalogFrontLeft{29, 30, 2};
+Packet cliffAnalogFrontRight{30, 32, 2};
+Packet cliffAnalogRight{31, 34, 2};
 
 /**
    define the structure of the roomba data
@@ -72,7 +78,7 @@ struct RoombaStateStructure {
   bool cliffFrontLeft;
   bool cliffFrontRight;
   bool cliffRight;
-  bool cleanbutton;
+  bool cleanButton;
   bool spotButton;
   bool dockButton;
   bool dayButton;
@@ -80,8 +86,13 @@ struct RoombaStateStructure {
   bool minuteButton;
   bool scheduleButton;
   bool clockButton;
-  long int odometer;
+  long int distance;
   long int angle;
+  uint16_t batteryVoltage;
+  uint16_t cliffAnalogLeft;
+  uint16_t cliffAnalogFrontLeft;
+  uint16_t cliffAnalogFrontRight;
+  uint16_t cliffAnalogRight;
 };
 
 // name the RoombaStateStructure and give the default values
@@ -102,6 +113,7 @@ RoombaStateStructure RoombaState {
   false,
   false,
   false,
+  0,
   0,
   0
 };
@@ -147,7 +159,7 @@ void responseToCliffSensors() {
   RoombaState.cliffRight = bitRead(responseFromRoomba[cliffRight.position], 0) ? true : false;
 }
 void responseToButtons() {
-  RoombaState.cleanbutton = bitRead(responseFromRoomba[buttons.position], 0) ? true : false;
+  RoombaState.cleanButton = bitRead(responseFromRoomba[buttons.position], 0) ? true : false;
   RoombaState.spotButton = bitRead(responseFromRoomba[buttons.position], 1) ? true : false;
   RoombaState.dockButton = bitRead(responseFromRoomba[buttons.position], 2) ? true : false;
   RoombaState.hourButton = bitRead(responseFromRoomba[buttons.position], 4) ? true : false;
@@ -160,18 +172,34 @@ void responseToDistance() {
   int highbyte = responseFromRoomba[distance.position];
   int lowbyte = responseFromRoomba[distance.position+1];
   int distanceDelta = highbyte * 256 + lowbyte;
-  RoombaState.odometer += distanceDelta;
+  RoombaState.distance += distanceDelta;
 }
-
-// This iangle totally broken, getting really large values for this angle, and zero values for 
-// individual wheel odometry, todo: try drivePWM and see if that activates the wheel odometry?
-// most likely I'm reading it wrong, or formatting the data incorrectly, or not reading the
-// documentation correctly.
 void responseToAngle() {
   int highbyte = responseFromRoomba[angle.position];
   int lowbyte = responseFromRoomba[angle.position+1];
   int angleDelta = highbyte * 256 + lowbyte;
   RoombaState.angle += angleDelta;
+}
+void responseToBatteryVoltage() {
+  uint8_t highbyte = responseFromRoomba[angle.position];
+  uint8_t lowbyte = responseFromRoomba[angle.position+1];
+  uint16_t batteryVoltage = highbyte * 256 + lowbyte;
+  RoombaState.batteryVoltage = batteryVoltage;
+}
+void responseToCliffAnalogSensors() {
+  byte position = cliffAnalogLeft.position;
+  uint8_t highbyte = responseFromRoomba[position];
+  uint8_t lowbyte = responseFromRoomba[position + 1];
+  RoombaState.cliffAnalogLeft = highbyte * 256 + lowbyte;
+  highbyte = responseFromRoomba[position + 2];
+  lowbyte = responseFromRoomba[position + 3];
+  RoombaState.cliffAnalogFrontLeft = highbyte * 256 + lowbyte;
+  highbyte = responseFromRoomba[position + 4];
+  lowbyte = responseFromRoomba[position + 5];
+  RoombaState.cliffAnalogFrontRight = highbyte * 256 + lowbyte;
+  highbyte = responseFromRoomba[position + 6];
+  lowbyte = responseFromRoomba[position + 7];
+  RoombaState.cliffAnalogRight = highbyte * 256 + lowbyte;
 }
 
 void updateRoombaState() {
@@ -182,6 +210,8 @@ void updateRoombaState() {
   responseToButtons();
   responseToDistance();
   responseToAngle();
+  responseToBatteryVoltage();
+  responseToCliffAnalogSensors();
 }
 
 /**

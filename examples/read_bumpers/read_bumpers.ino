@@ -2,19 +2,22 @@
 
 void setup() {
   Serial.begin(115200); // use this port to read out debugging data from the Roomba
-  delay(100);
   Serial1.begin(115200); // we need this separate port to talk to the Roomba
-  // this command puts the roomba into hacking mode and will follow Asimov's Third Law
-  startSafe();
+  startSafe(); // this command puts the roomba into hacking mode and will follow Asimov's Third Law
 }
 
-void drive_a_little() {
+void twist_a_little(bool left) {
   ledState.powerColor = orange; // let's make the big button color Orange
   updateLeds(); // update to make it real
-  driveStandard(100, 0); // drive forward at 100mm/second 
-  delay(500);           // drive a little
-  driveStandard(0, 0); // put the brakes on
+  
+  if (left) {
+    driveDirect(100, -100);
+  } else {
+    driveDirect(-100, 100);
+  }
+  delay(500);           // twist a little
   ledState.powerColor = green;
+
   updateLeds();
 }
 
@@ -27,10 +30,11 @@ void exitRoomba() { // it's over
 void loop() {
   updateLeds();
   updateRoombaState(); // you MUST call this in your program loops to know what the Roomba is doing
-  Serial.println(RoombaState.dockButton);
-  if (RoombaState.dockButton) {
+  if (RoombaState.minuteButton) {
+    twist_a_little(true);
+  } else if (RoombaState.dayButton) {
+    twist_a_little(false);
+  } else if (RoombaState.dockButton) {
     exitRoomba();
-  } else if (RoombaState.cleanButton) {
-    drive_a_little();
   }
 }
