@@ -47,9 +47,9 @@ byte convertPacketToPosition (byte packet) {
    This is the human-readable way to define the data packets and how they are gotten from the Roomba
 */
 struct Packet {
-  byte number; // the documentation will say it's packet "7" or something
-  byte position; // the position in the stream of bytes from the Roomba that this packet is
-  byte length; // how many bytes long is this packet?  
+  byte number; // what the documentation says the packet number is
+  byte position; // the actual position in the stream of bytes from the Roomba that this packet is
+  byte length; // how many bytes long is this packet? 
 };
 Packet bumper{7, convertPacketToPosition(7), 1};
 Packet cliffLeft{9, convertPacketToPosition(9), 1};
@@ -60,15 +60,22 @@ Packet buttons{18, convertPacketToPosition(18), 1};
 Packet distance{19, convertPacketToPosition(19), 2};
 Packet angle{20, 14, 2};
 Packet voltage{22, 17, 2};
-
 Packet cliffAnalogLeft{28, 28, 2};
 Packet cliffAnalogFrontLeft{29, 30, 2};
 Packet cliffAnalogFrontRight{30, 32, 2};
 Packet cliffAnalogRight{31, 34, 2};
+Packet lightBumpers{31, 56, 2};
 
 /**
    define the structure of the roomba data
 */
+
+
+
+
+
+
+
 struct RoombaStateStructure {
   bool bumperRight;
   bool bumperLeft;
@@ -93,6 +100,13 @@ struct RoombaStateStructure {
   uint16_t cliffAnalogFrontLeft;
   uint16_t cliffAnalogFrontRight;
   uint16_t cliffAnalogRight;
+  byte lightBumpers; // this is all the light bumpers together
+  bool lightBumperLeft;
+  bool lightBumperFrontLeft;
+  bool lightBumperCenterLeft;
+  bool lightBumperCenterRight;
+  bool lightBumperFrontRight;
+  bool lightBumperRight;
 };
 
 // name the RoombaStateStructure and give the default values
@@ -115,7 +129,18 @@ RoombaStateStructure RoombaState {
   false,
   0,
   0,
-  0
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false
 };
 
 /**
@@ -139,7 +164,7 @@ void readAllData() {
   delay(40); 
 }
 
-// convert Roomba response stream to bumper byte to RoombaState, etc....
+// convert Roomba response stream to bumper bytes to RoombaState
 void responseToBumper() {
   bool right = bitRead(responseFromRoomba[bumper.position], 0) ? true : false;
   bool left = bitRead(responseFromRoomba[bumper.position], 1) ? true : false;
@@ -201,6 +226,16 @@ void responseToCliffAnalogSensors() {
   lowbyte = responseFromRoomba[position + 7];
   RoombaState.cliffAnalogRight = highbyte * 256 + lowbyte;
 }
+void responseToLightBumpers() {
+  byte bumpers = responseFromRoomba[lightBumpers.position];
+  RoombaState.lightBumpers = bumpers;
+  RoombaState.lightBumperLeft = bitRead(bumpers, 0) ? true : false;
+  RoombaState.lightBumperFrontLeft = bitRead(bumpers, 1) ? true : false;
+  RoombaState.lightBumperCenterLeft = bitRead(bumpers, 2) ? true : false;
+  RoombaState.lightBumperCenterRight = bitRead(bumpers, 3) ? true : false;
+  RoombaState.lightBumperFrontRight = bitRead(bumpers, 4) ? true : false;
+  RoombaState.lightBumperRight = bitRead(bumpers, 5) ? true : false;
+}
 
 void updateRoombaState() {
   readAllData();
@@ -212,6 +247,7 @@ void updateRoombaState() {
   responseToAngle();
   responseToBatteryVoltage();
   responseToCliffAnalogSensors();
+  responseToLightBumpers();
 }
 
 /**

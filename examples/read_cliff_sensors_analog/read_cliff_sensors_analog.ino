@@ -20,6 +20,9 @@ void exitRoomba() { // it's over
 
 void loop() {
   updateRoombaState(); // you MUST call this in your program loops to know what the Roomba is doing
+  if (RoombaState.dockButton) {
+    exitRoomba();
+  }
 
   Serial.print("Analog Cliff Left: ");
   Serial.print(RoombaState.cliffAnalogLeft);

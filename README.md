@@ -42,6 +42,13 @@ I needed a quick Arduino library for a Roomba based project. The spec is :
   + uint16_t cliffAnalogFrontLeft;
   + uint16_t cliffAnalogFrontRight;
   + uint16_t cliffAnalogRight;
+  + byte lightBumpers; // this is all the light bumpers together
+  + bool lightBumperLeft;
+  + bool lightBumperFrontLeft;
+  + bool lightBumperCenterLeft;
+  + bool lightBumperCenterRight;
+  + bool lightBumperFrontRight;
+  + bool lightBumperRight;
   
   To use:
   ```
