@@ -20,7 +20,7 @@ void loop() {
   updateLeds();
   updateRoombaState(); // you MUST call this in your program loops to know what the Roomba is doing
 
-  // You can drive the roomba around using the minute, hour day buttons
+  // You can drive the roomba around using spot and clean button
   if (RoombaState.spotButton) {
     drivePWM(100, 100);
   } else if (RoombaState.cleanButton) {
