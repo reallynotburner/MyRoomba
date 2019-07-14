@@ -17,9 +17,20 @@ void exitRoomba() { // it's over
   while (true) {} // INFINITE LOOP!
 }
 
+void simpleManualDrive() {
+  if (RoombaState.spotButton) {
+    drivePWM(100, 100);
+  } else if (RoombaState.cleanButton) {
+    drivePWM(-100, -100);
+  } else {
+    drivePWM(0, 0);
+  }
+}
+
 void loop() {
   updateLeds();
   updateRoombaState(); // you MUST call this in your program loops to know what the Roomba is doing
+  simpleManualDrive();
 
   Serial.print("What the Roomba sees: ");
   Serial.print(RoombaState.lightBumperLeft);
@@ -30,4 +41,8 @@ void loop() {
   Serial.print(RoombaState.lightBumperRight);
   Serial.print(" All Light Bumpers: ");
   Serial.println(RoombaState.lightBumpers);
+
+  if (RoombaState.dockButton) {
+    exitRoomba();
+  }
 }
