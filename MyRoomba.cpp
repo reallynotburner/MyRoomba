@@ -7,9 +7,10 @@
 #include "Arduino.h"
 #include "MyRoomba.h"
 
-MyRoomba::MyRoomba(HardwareSerial* serialArg)
+MyRoomba::MyRoomba(HardwareSerial* serialArg, long int baud = 115200)
 {
   _serial = serialArg;
+  _serial->begin(baud);
   bumpers = 0;
   bumperRight = false;
   bumperLeft = false;
@@ -41,6 +42,7 @@ MyRoomba::MyRoomba(HardwareSerial* serialArg)
   lightBumperCenterRight = false;
   lightBumperFrontRight = false;
   lightBumperRight = false;
+  delay(1000);
 }
 
 void MyRoomba::dot()
@@ -55,8 +57,8 @@ void MyRoomba::dash()
 
 void MyRoomba::startSafe()
 {
-  _serial->write(start);  //Start
-  _serial->write(safe);  //Safe mode
+  byte buf[] = {128, 131};
+  _serial->write(buf, 2);  //Start
   delay(1000);
 }
 
@@ -72,10 +74,10 @@ void MyRoomba::stop()
 
 void MyRoomba::readAllData()
 {
+  byte buf[] = {143, 100};
   byte inByte = 0;
   byte counter = 0;
-  _serial->write(143); // request a group of packets
-  _serial->write(100); // specifically, ALL OF THEM
+  _serial->write(buf, 2); // request a group of packets, ALL OF THEM
 
   while (_serial->available() <= 0) {} // wait for response
   while (counter < 80) {
@@ -89,6 +91,7 @@ void MyRoomba::readAllData()
 
 void MyRoomba::updateState()
 {
+  readAllData();
   bumpers = _inputBuffer[0];
 }
 

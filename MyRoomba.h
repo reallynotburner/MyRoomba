@@ -46,7 +46,7 @@ struct RoombaPacket {
 class MyRoomba
 {
   public:
-    MyRoomba(HardwareSerial* serialArg);
+  MyRoomba(HardwareSerial* serialArg, long int baud);
     void dot();
     void dash();
     void startSafe();
