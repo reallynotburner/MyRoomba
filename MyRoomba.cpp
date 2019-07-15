@@ -77,13 +77,20 @@ void MyRoomba::readAllData()
   byte buf[] = {143, 100};
   byte inByte = 0;
   byte counter = 0;
+  long int timeoutTime = millis() + 200;
   _serial->write(buf, 2); // request a group of packets, ALL OF THEM
 
-  while (_serial->available() <= 0) {} // wait for response
+  while (_serial->available() <= 0) {
+    if(millis() > timeoutTime) {
+      return;
+    }
+  } // wait for response
   while (counter < 80) {
     while (_serial->available() <= 0) {} // wait for response
+    if(millis() > timeoutTime) {
+      return;
+    }  
     _inputBuffer[counter] = _serial->read();
-      Serial.println(_inputBuffer[counter]);
     counter++;
   }
   delay(40);
