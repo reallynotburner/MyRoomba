@@ -69,13 +69,6 @@ Packet lightBumpers{31, 56, 2};
 /**
    define the structure of the roomba data
 */
-
-
-
-
-
-
-
 struct RoombaStateStructure {
   bool bumperRight;
   bool bumperLeft;
@@ -95,7 +88,7 @@ struct RoombaStateStructure {
   bool clockButton;
   long int distance;
   long int angle;
-  uint16_t batteryVoltage;
+  float batteryVoltage;
   uint16_t cliffAnalogLeft;
   uint16_t cliffAnalogFrontLeft;
   uint16_t cliffAnalogFrontRight;
@@ -206,10 +199,10 @@ void responseToAngle() {
   RoombaState.angle += angleDelta;
 }
 void responseToBatteryVoltage() {
-  uint8_t highbyte = responseFromRoomba[angle.position];
-  uint8_t lowbyte = responseFromRoomba[angle.position+1];
+  uint8_t highbyte = responseFromRoomba[voltage.position];
+  uint8_t lowbyte = responseFromRoomba[voltage.position+1];
   uint16_t batteryVoltage = highbyte * 256 + lowbyte;
-  RoombaState.batteryVoltage = batteryVoltage;
+  RoombaState.batteryVoltage = batteryVoltage / 1000.0;
 }
 void responseToCliffAnalogSensors() {
   byte position = cliffAnalogLeft.position;
