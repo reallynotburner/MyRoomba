@@ -37,7 +37,7 @@ I needed a quick Arduino library for a Roomba based project. The spec is :
   + long int angle;
   + long int distance;
   + long int angle;
-  + uint16_t batteryVoltage;
+  + float batteryVoltage;
   + uint16_t cliffAnalogLeft;
   + uint16_t cliffAnalogFrontLeft;
   + uint16_t cliffAnalogFrontRight;
