@@ -69,7 +69,7 @@ Packet lightBumpers{31, 56, 2};
 /**
    define the structure of the roomba data
 */
-struct RoombaStateStructure {
+struct Roomba600StateStruct {
   bool bumperRight;
   bool bumperLeft;
   bool wheelDropRight;
@@ -102,8 +102,8 @@ struct RoombaStateStructure {
   bool lightBumperRight;
 };
 
-// name the RoombaStateStructure and give the default values
-RoombaStateStructure RoombaState {
+// name the Roomba600StateStruct and give the default values
+Roomba600StateStruct RoombaState {
   false,
   false,
   false,
@@ -144,7 +144,6 @@ void readAllData() {
     sensor_packet_group, // send us a sensor sensor group please
     big_group, // which packet group you want, 0 is packets 7 to 26, big_group is ALL OF THEM
   };
-  byte inByte = 0;
   byte counter = 0;
   Serial1.write(readSensors, 2);
   while (Serial1.available() <= 0) {} // wait for response
@@ -159,32 +158,32 @@ void readAllData() {
 
 // convert Roomba response stream to bumper bytes to RoombaState
 void responseToBumper() {
-  bool right = bitRead(responseFromRoomba[bumper.position], 0) ? true : false;
-  bool left = bitRead(responseFromRoomba[bumper.position], 1) ? true : false;
+  bool right = bitRead(responseFromRoomba[bumper.position], 0);
+  bool left = bitRead(responseFromRoomba[bumper.position], 1);
   RoombaState.bumperRight = right;
   RoombaState.bumperLeft = left;
 }
 void responseToWheelDrop() {
-  bool right = bitRead(responseFromRoomba[bumper.position], 2) ? true : false;
-  bool left = bitRead(responseFromRoomba[bumper.position], 3) ? true : false;
+  bool right = bitRead(responseFromRoomba[bumper.position], 2);
+  bool left = bitRead(responseFromRoomba[bumper.position], 3);
   RoombaState.wheelDropRight = right;
   RoombaState.wheelDropLeft = left;
 }
 void responseToCliffSensors() {
-  RoombaState.cliffLeft = bitRead(responseFromRoomba[cliffLeft.position], 0) ? true : false;
-  RoombaState.cliffFrontLeft = bitRead(responseFromRoomba[cliffFrontLeft.position], 0) ? true : false;
-  RoombaState.cliffFrontRight = bitRead(responseFromRoomba[cliffFrontRight.position], 0) ? true : false;
-  RoombaState.cliffRight = bitRead(responseFromRoomba[cliffRight.position], 0) ? true : false;
+  RoombaState.cliffLeft = bitRead(responseFromRoomba[cliffLeft.position], 0);
+  RoombaState.cliffFrontLeft = bitRead(responseFromRoomba[cliffFrontLeft.position], 0);
+  RoombaState.cliffFrontRight = bitRead(responseFromRoomba[cliffFrontRight.position], 0);
+  RoombaState.cliffRight = bitRead(responseFromRoomba[cliffRight.position], 0);
 }
 void responseToButtons() {
-  RoombaState.cleanButton = bitRead(responseFromRoomba[buttons.position], 0) ? true : false;
-  RoombaState.spotButton = bitRead(responseFromRoomba[buttons.position], 1) ? true : false;
-  RoombaState.dockButton = bitRead(responseFromRoomba[buttons.position], 2) ? true : false;
-  RoombaState.hourButton = bitRead(responseFromRoomba[buttons.position], 4) ? true : false;
-  RoombaState.dayButton = bitRead(responseFromRoomba[buttons.position], 5) ? true : false;
-  RoombaState.minuteButton = bitRead(responseFromRoomba[buttons.position], 3) ? true : false;
-  RoombaState.scheduleButton = bitRead(responseFromRoomba[buttons.position], 6) ? true : false;
-  RoombaState.clockButton = bitRead(responseFromRoomba[buttons.position], 7) ? true : false;
+  RoombaState.cleanButton = bitRead(responseFromRoomba[buttons.position], 0);
+  RoombaState.spotButton = bitRead(responseFromRoomba[buttons.position], 1);
+  RoombaState.dockButton = bitRead(responseFromRoomba[buttons.position], 2);
+  RoombaState.hourButton = bitRead(responseFromRoomba[buttons.position], 4);
+  RoombaState.dayButton = bitRead(responseFromRoomba[buttons.position], 5);
+  RoombaState.minuteButton = bitRead(responseFromRoomba[buttons.position], 3);
+  RoombaState.scheduleButton = bitRead(responseFromRoomba[buttons.position], 6);
+  RoombaState.clockButton = bitRead(responseFromRoomba[buttons.position], 7);
 }
 void responseToDistance() {
   int highbyte = responseFromRoomba[distance.position];
@@ -222,12 +221,12 @@ void responseToCliffAnalogSensors() {
 void responseToLightBumpers() {
   byte bumpers = responseFromRoomba[lightBumpers.position];
   RoombaState.lightBumpers = bumpers;
-  RoombaState.lightBumperLeft = bitRead(bumpers, 0) ? true : false;
-  RoombaState.lightBumperFrontLeft = bitRead(bumpers, 1) ? true : false;
-  RoombaState.lightBumperCenterLeft = bitRead(bumpers, 2) ? true : false;
-  RoombaState.lightBumperCenterRight = bitRead(bumpers, 3) ? true : false;
-  RoombaState.lightBumperFrontRight = bitRead(bumpers, 4) ? true : false;
-  RoombaState.lightBumperRight = bitRead(bumpers, 5) ? true : false;
+  RoombaState.lightBumperLeft = bitRead(bumpers, 0);
+  RoombaState.lightBumperFrontLeft = bitRead(bumpers, 1);
+  RoombaState.lightBumperCenterLeft = bitRead(bumpers, 2);
+  RoombaState.lightBumperCenterRight = bitRead(bumpers, 3);
+  RoombaState.lightBumperFrontRight = bitRead(bumpers, 4);
+  RoombaState.lightBumperRight = bitRead(bumpers, 5);
 }
 
 void updateRoombaState() {
