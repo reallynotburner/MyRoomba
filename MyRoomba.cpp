@@ -47,29 +47,39 @@ MyRoomba::MyRoomba(HardwareSerial* serialArg, long int baud = 115200)
 
 void MyRoomba::dot()
 {
-  _serial->println("ABC");
+  _serial->write("ABC");
 }
 
 void MyRoomba::dash()
 {
-  _serial->println("DEF");
+  _serial->write("DEF");
+}
+
+void MyRoomba::driveStandard(int velocity, int radius)
+{
+  byte buf[] = { 137, 255, 56, 1, 244 }; // TODO make this actually use the arguments
+  _serial->write(buf, 5);
 }
 
 void MyRoomba::startSafe()
 {
-  byte buf[] = {128, 131};
-  _serial->write(buf, 2);  //Start
-  delay(1000);
+  _serial->write(128);  //Start
+  delay(1000);          // IDK if this is a necessary pause
+  _serial->write(131);  //Safe mode
+  delay(1000);          // IDK if this is a necessary pause
 }
 
 void MyRoomba::startFull()
 {
-  _serial->println("DEF");
+  _serial->write(128);  //Start
+  delay(1000);          // IDK if this is a necessary pause
+  _serial->write(132);  //Full mode
+  delay(1000);          // IDK if this is a necessary pause
 }
 
 void MyRoomba::stop()
 {
-  _serial->println("DEF");
+  _serial->write(173);
 }
 
 void MyRoomba::readAllData()
