@@ -1,7 +1,10 @@
 # MyRoomba
 
-I needed a quick Arduino library for a Roomba based project. The spec is : 
-[Roomba Open Interface](https://www.irobotweb.com/~/media/MainSite/PDFs/About/STEM/Create/iRobot_Roomba_600_Open_Interface_Spec.pdf).  The significant prior art is [Apocrathia's thorough library](https://github.com/Apocrathia/Roomba).  It didn't work with Arduino Leonardo and Roomba 650, so I made my simpler version.
+I needed a quick Arduino library for a Roomba 650 based project. The specification is: 
+[Roomba Open Interface](https://www.irobotweb.com/~/media/MainSite/PDFs/About/STEM/Create/iRobot_Roomba_600_Open_Interface_Spec.pdf).  The significant prior art is [Apocrathia's thorough library](https://github.com/Apocrathia/Roomba).  It didn't work with Arduino Leonardo and Roomba 650, so I made my simpler version.  This was tested with a Roomba 650.  You'll have to modify it to work with Roomba 400 series, like the Roomba Discovery.  I'll let you figure out how that's done.
+
+## Usage
+See examples folder for how to use this library to do a few simple tasks.
 
 ## Methods
 * updateRoombaState() so you can access current RoombaState.values
@@ -73,6 +76,11 @@ I needed a quick Arduino library for a Roomba based project. The spec is :
     // make sure to update the led's to make it real
     udpateLeds();
     ```
+
+## FAQ
+* Roomba doesn't go!  What do I do?
+  + All the example programs here need the Roomba to be on to work.  So the green light in the center needs to be on.  A quick press of the center button will take the Roomba from being in the "off" state and into the "on" state.  You can hit the reset button on the Arduino and after 8 seconds, it will run it's program again.
+  + Verify that you are wired up correctly.  V+ of the Roomba needs to go to Vin of the Arduino.  V- goes to any of the Arduino GND pins.  The TX of the Arduino's Serial1 port goes to the RX of the Roomba.  The RX of the Arduino goes to the TX of the Roomba.  Sounds backwards but it's like a telephone.  My mouth speakig (TX) goes to your ear receiving (RX) and vice versa.
 
 ## TODO's
 * move the Roomba to a class, that would remove the global functions and apply them to Roomba scope
