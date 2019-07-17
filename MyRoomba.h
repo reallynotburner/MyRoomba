@@ -157,14 +157,8 @@ void readAllData() {
 }
 
 // convert Roomba response stream to bumper bytes to RoombaState
-// These ternary operators may be wasing program space.  TODO:
-//   try just setting state directly RoombaState.bumperRight = bitRead(responseFromRoomba[bumper.position], 0);, for example
-/**
- * Before optimization:
- * Sketch uses 6050 bytes (21%) of program storage space. Maximum is 28672 bytes.
- * Global variables use 473 bytes (18%) of dynamic memory
-
- */
+// Compiler optimizes out these bool values and ternary operators, 
+// reomve only if I want to make more terse code.
 void responseToBumper() {
   bool right = bitRead(responseFromRoomba[bumper.position], 0);
   bool left = bitRead(responseFromRoomba[bumper.position], 1);
