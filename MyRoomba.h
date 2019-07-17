@@ -157,8 +157,6 @@ void readAllData() {
 }
 
 // convert Roomba response stream to bumper bytes to RoombaState
-// Compiler optimizes out these bool values and ternary operators, 
-// reomve only if I want to make more terse code.
 void responseToBumper() {
   bool right = bitRead(responseFromRoomba[bumper.position], 0);
   bool left = bitRead(responseFromRoomba[bumper.position], 1);
