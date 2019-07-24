@@ -19,7 +19,7 @@
 #define baud_set 129 // for custom serial speeds, the 650 takes 115200
 #define safe 131 // robot will protect it's own existence
 #define full 132 // robot will ignore cliff and battery sensors, breaking itself to obey
-#define clean 135 // robot will start the normal clean program
+#define clean_command 135 // robot will start the normal clean program
 #define clean_max 136 // robot will do the clean program until it runs out of battery
 #define clean_spot 134
 #define seek_dock 143 // robot will clean until it finds a dock, then park and charge itself
@@ -65,6 +65,7 @@ Packet cliffAnalogFrontLeft{29, 30, 2};
 Packet cliffAnalogFrontRight{30, 32, 2};
 Packet cliffAnalogRight{31, 34, 2};
 Packet lightBumpers{31, 56, 2};
+Packet dirtDetect{15, 8, 1};
 
 /**
    define the structure of the roomba data
@@ -78,6 +79,7 @@ struct Roomba600StateStruct {
   bool cliffFrontLeft;
   bool cliffFrontRight;
   bool cliffRight;
+  byte dirtDetect;
   bool cleanButton;
   bool spotButton;
   bool dockButton;
@@ -112,6 +114,7 @@ Roomba600StateStruct RoombaState {
   false,
   false,
   false,
+  0,
   false,
   false,
   false,
@@ -228,6 +231,10 @@ void responseToLightBumpers() {
   RoombaState.lightBumperFrontRight = bitRead(bumpers, 4);
   RoombaState.lightBumperRight = bitRead(bumpers, 5);
 }
+void responseToDirtDetect() {
+  byte dirt = responseFromRoomba[dirtDetect.position];
+  RoombaState.dirtDetect = dirt;
+}
 
 void updateRoombaState() {
   readAllData();
@@ -240,6 +247,7 @@ void updateRoombaState() {
   responseToBatteryVoltage();
   responseToCliffAnalogSensors();
   responseToLightBumpers();
+  responseToDirtDetect();
 }
 
 /**
@@ -285,6 +293,11 @@ void startFull()
 
 void stop() {
   Serial1.write(roomba_stop);
+  delay(1000);
+}
+
+void clean() {
+  Serial1.write(clean_command);
   delay(1000);
 }
 

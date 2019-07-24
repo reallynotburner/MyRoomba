@@ -11,6 +11,7 @@ See examples folder for how to use this library to do a few simple tasks.
 * driveDirect(velocityRight, velocityLeft)
 * drivePWM(torqueRight, torqueLeft)
 * driveStandard(velocity, radius)
+* clean()
 * playSong()
 * setupSong()
 * startSafe() 
@@ -28,6 +29,7 @@ See examples folder for how to use this library to do a few simple tasks.
   + bool cliffFrontLeft;
   + bool cliffFrontRight;
   + bool cliffRight;
+  + byte dirtDetect;
   + bool cleanButton;
   + bool spotButton;
   + bool dockButton;
