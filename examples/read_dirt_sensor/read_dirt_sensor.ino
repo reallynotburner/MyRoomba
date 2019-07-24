@@ -5,11 +5,26 @@
  */
 #include "MyRoomba.h"
 
+// wait here forever until someone pushes the button
+void waitToClean() {
+  ledState.powerColor = orange;  // make that light orange to show we changed state
+  updateLeds();
+  
+  while (!RoombaState.cleanButton) {
+    // you must update state, or RoombaState.cleanButton will not show that you're pushing it
+    updateRoombaState();
+  }
+
+  // Begin the cleaning!
+  delay(1000); // dramatic pause!
+  clean();
+}
+
 void setup() {
   Serial.begin(115200); // use this port to read out debugging data from the Roomba
   Serial1.begin(115200); // we need this separate port to talk to the Roomba
   startSafe(); // this command puts the roomba into hacking mode and will follow Asimov's Third Law
-  ledState.powerColor = 255;  // make that light red
+  waitToClean();
 }
 
 void allLightsStateTrue() {
@@ -31,10 +46,7 @@ void exitRoomba() { // it's over
   while (true) {} // INFINITE LOOP!
 }
 
-void loop() {
-
-  updateLeds();
-  updateRoombaState(); // you MUST call this in your program loops to know what the Roomba is doing
+void dirtDetectFunction() {
   ledState.powerBrightness = RoombaState.dirtDetect;
 
   if (RoombaState.dirtDetect > 100) {
@@ -44,6 +56,14 @@ void loop() {
     allLightsStateFalse();
     Serial.println("clean");
   }
+
+  updateLeds();
+}
+
+void loop() {
+  updateLeds();
+  updateRoombaState(); // you MUST call this in your program loops to know what the Roomba is doing
+  dirtDetectFunction();
 
   if (RoombaState.dockButton) {
     exitRoomba();

@@ -19,7 +19,7 @@
 #define baud_set 129 // for custom serial speeds, the 650 takes 115200
 #define safe 131 // robot will protect it's own existence
 #define full 132 // robot will ignore cliff and battery sensors, breaking itself to obey
-#define clean 135 // robot will start the normal clean program
+#define clean_command 135 // robot will start the normal clean program
 #define clean_max 136 // robot will do the clean program until it runs out of battery
 #define clean_spot 134
 #define seek_dock 143 // robot will clean until it finds a dock, then park and charge itself
@@ -293,6 +293,11 @@ void startFull()
 
 void stop() {
   Serial1.write(roomba_stop);
+  delay(1000);
+}
+
+void clean() {
+  Serial1.write(clean_command);
   delay(1000);
 }
 
