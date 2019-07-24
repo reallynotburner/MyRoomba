@@ -65,6 +65,7 @@ Packet cliffAnalogFrontLeft{29, 30, 2};
 Packet cliffAnalogFrontRight{30, 32, 2};
 Packet cliffAnalogRight{31, 34, 2};
 Packet lightBumpers{31, 56, 2};
+Packet dirtDetect{15, 8, 1};
 
 /**
    define the structure of the roomba data
@@ -78,6 +79,7 @@ struct Roomba600StateStruct {
   bool cliffFrontLeft;
   bool cliffFrontRight;
   bool cliffRight;
+  byte dirtDetect;
   bool cleanButton;
   bool spotButton;
   bool dockButton;
@@ -112,6 +114,7 @@ Roomba600StateStruct RoombaState {
   false,
   false,
   false,
+  0,
   false,
   false,
   false,
@@ -228,6 +231,10 @@ void responseToLightBumpers() {
   RoombaState.lightBumperFrontRight = bitRead(bumpers, 4);
   RoombaState.lightBumperRight = bitRead(bumpers, 5);
 }
+void responseToDirtDetect() {
+  byte dirt = responseFromRoomba[dirtDetect.position];
+  RoombaState.dirtDetect = dirt;
+}
 
 void updateRoombaState() {
   readAllData();
@@ -240,6 +247,7 @@ void updateRoombaState() {
   responseToBatteryVoltage();
   responseToCliffAnalogSensors();
   responseToLightBumpers();
+  responseToDirtDetect();
 }
 
 /**
